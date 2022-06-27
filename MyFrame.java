@@ -1,37 +1,48 @@
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
+package 자바;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class MyFrame extends JFrame {
-		public MyFrame() {
-			Toolkit kit = Toolkit.getDefaultToolkit();
-			Dimension screenSize = kit.getScreenSize();
-			setSize(300, 200);
-			setLocation(screenSize.width/2, screenSize.height/2);		//화면 뜨는 위치
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);				//닫기창
-			setTitle("MyFrame");
-			Image img = kit.getImage("dd.gif");
-			setIconImage(img);
-			setLayout(new FlowLayout());
-			JButton button = new JButton("button");
-			this.add(button);
-			setVisible(true);
-			
-			
-			
-			
-			
-			/*setSize(300, 200);
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setTitle("MyFrame");
-			
-			setLayout(new FlowLayout());				//배치관리자 설정
-			JButton button = new JButton("버튼");			//컴포넌트 생성 및 추가
-			this.add(button);
-			setVisible(true);*/
+public class MyFrame extends JFrame implements ActionListener {
+	private JButton button1;
+	private JButton button2;
+	private JPanel panel;
+	
+	public MyFrame() {
+		setSize(500,500);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		setTitle("이벤트 예제");
+		
+		panel = new JPanel();
+		
+		button1 = new JButton("노란색");
+		button2 = new JButton("분홍색");
+		button1.addActionListener(this);
+		button2.addActionListener(this);
+		
+		panel.add(button1);
+		panel.add(button2);
+		
+		add(panel);
+		
+		setVisible(true);
+	}
+		public void actionPerformed(ActionEvent e) {
+			if(e.getSource() == button1) {
+				panel.setBackground(Color.YELLOW);
+			}
+			else if (e.getSource() == button2){
+				panel.setBackground(Color.PINK);
+			}
+		}
+	
+	public static void main(String[] args) {
+		MyFrame t = new MyFrame();
 	}
 }

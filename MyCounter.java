@@ -1,4 +1,4 @@
-package 기말;
+package 자바;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class MyCounter extends JFrame{
+public class MyCounter extends JFrame implements ActionListener{
 	private JLabel label, label1;
 	private JButton button;
 	private int count = 0;
@@ -20,23 +20,25 @@ public class MyCounter extends JFrame{
 		panel.add(label);
 		
 		label1 = new JLabel(" " + count);
-		label1.setFont(new Font("Serif", 
-				Font.BOLD | Font.ITALIC, 100));
-		panel.add(label1);
+		label1.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 100));
+		
 		button = new JButton("카운터 증가");
 		panel.add(button);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				count++;
-				label1.setText(count + " ");
-			}
-		});
+		button.addActionListener(this);
+		
 		add(panel);
 		setSize(300,200);
 		setTitle("My Counter");
 		setVisible(true);
 	}
 	
+	public void actionPerformed(ActionEvent event) {
+		count++;
+		label1.setText(count + " ");
+	}
+}
+
+public class CounterTest{
 	public static void main(String[] args) {
 		new MyCounter();
 	}
