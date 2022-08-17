@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.util.Stack;
  
 public class น้มุ9012 {
- 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
