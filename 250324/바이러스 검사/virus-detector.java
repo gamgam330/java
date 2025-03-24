@@ -18,7 +18,7 @@ public class Main {
         int reader = Integer.parseInt(st.nextToken());
         int member = Integer.parseInt(st.nextToken());
 
-        int count = 0;
+        long count = 0;
 
         for(int i = 0; i < N; i++){
             for(int j = 0; j < 2; j++){
