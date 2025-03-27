@@ -29,6 +29,7 @@ public class Main {
                 visited[i][j] = 1;
                 backTracking(i, j, 1, visited);
                 visited[i][j] = 0;
+                checkExceptionShape(i, j);
             }
         }
 
@@ -66,5 +67,24 @@ public class Main {
         }
 
         result = Math.max(result, tmp);
+    }
+
+    private static void checkExceptionShape(int x, int y) {
+        if (x >= 0 && x < N - 1 && y > 0 && y < M - 1) {
+            int sum = map[x][y] + map[x+1][y] + map[x][y-1] + map[x][y+1];
+            result = Math.max(result, sum);
+        }
+        if (x > 0 && x < N - 1 && y >= 0 && y < M - 1) {
+            int sum = map[x][y] + map[x-1][y] + map[x+1][y] + map[x][y+1];
+            result = Math.max(result, sum);
+        }
+        if (x > 0 && x < N && y > 0 && y < M - 1) {
+            int sum = map[x][y] + map[x-1][y] + map[x][y-1] + map[x][y+1];
+            result = Math.max(result, sum);
+        }
+        if (x > 0 && x < N - 1 && y > 0 && y < M) {
+            int sum = map[x][y] + map[x-1][y] + map[x+1][y] + map[x][y-1];
+            result = Math.max(result, sum);
+        }
     }
 }
