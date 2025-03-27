@@ -30,14 +30,13 @@ public class Main {
                 visited[i][j] = true;
                 backTracking(i, j, map[i][j], 1);
                 visited[i][j] = false;
-                checkExceptionShape(i, j);
             }
         }
 
         System.out.println(result);
     }
 
-    private static void backTracking(int x, int y, int sum, int count){
+   private static void backTracking(int x, int y, int sum, int count){
         if(count == 4){
             result = Math.max(result, sum);
             return;
@@ -47,30 +46,14 @@ public class Main {
             int nx = x + dx[i];
             int ny = y + dy[i];
 
-            if(0 <= nx && nx < N && 0 <= ny && ny < M&& !visited[nx][ny]){
+            if(0 <= nx && nx < N && 0 <= ny && ny < M && !visited[nx][ny]){
                 visited[nx][ny] = true;
+                if(count == 2){
+                    backTracking(x, y, sum + map[nx][ny], count + 1);
+                }
                 backTracking(nx, ny, sum + map[nx][ny], count + 1);
                 visited[nx][ny] = false;
             }
-        }
-    }
-
-    private static void checkExceptionShape(int x, int y) {
-        if (x >= 0 && x < N - 1 && y > 0 && y < M - 1) {
-            int sum = map[x][y] + map[x+1][y] + map[x][y-1] + map[x][y+1];
-            result = Math.max(result, sum);
-        }
-        if (x > 0 && x < N - 1 && y >= 0 && y < M - 1) {
-            int sum = map[x][y] + map[x-1][y] + map[x+1][y] + map[x][y+1];
-            result = Math.max(result, sum);
-        }
-        if (x > 0 && x < N && y > 0 && y < M - 1) {
-            int sum = map[x][y] + map[x-1][y] + map[x][y-1] + map[x][y+1];
-            result = Math.max(result, sum);
-        }
-        if (x > 0 && x < N - 1 && y > 0 && y < M) {
-            int sum = map[x][y] + map[x-1][y] + map[x+1][y] + map[x][y-1];
-            result = Math.max(result, sum);
         }
     }
 }
