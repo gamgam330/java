@@ -5,7 +5,7 @@ public class Main {
     static int[] arr;
     static int[] command;
     static int N;
-    static int max, min;
+    static long max, min;
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
