@@ -5,7 +5,6 @@ public class Main {
     static int[][] map;
     static int N, L;
     static int count;
-    static Stack<Integer> s;
     static boolean[] visited;
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
