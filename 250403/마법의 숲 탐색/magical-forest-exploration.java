@@ -7,7 +7,12 @@ public class Main {
     static int[][] forest;
     static int[] dy = {-1 ,0, 1, 0};
     static int[] dx = {0, 1, 0, -1};
-    static int[][] draw = {{-1,0}, {0,1}, {1,0}, {0,-1}};   //상, 우, 하, 좌
+    static int[][] draw = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {0, 0}};   //상, 하, 좌, 우, 중앙
+
+    static int[][] golem = {{2, 1, 1, 1, 3},
+                            {1, 1, 1, 2, 3},
+                            {1, 2, 1, 1, 3},
+                            {1, 1, 2, 1, 3}};
 
     static int x, y, ndir;
     static boolean[][] visited;
@@ -96,11 +101,12 @@ public class Main {
         }
         if(x <= 3) return false;
     
-        for(int i = 0; i < 4; i++){
-            forest[x + draw[i][0]][y + draw[i][1]] = (i == ndir) ? 2 : 1;
-        }
+        for(int i = 0; i < 5; i++){
+            int nx = x + draw[i][0];
+            int ny = y + draw[i][1];
 
-        forest[x][y] = 3;
+            forest[nx][ny] = golem[ndir][i];
+        }
 
         return true;
     }
