@@ -93,7 +93,7 @@ public class Main {
 					}
 				}
 
-				if(count == 0){
+				if(temp.size() == 0){
 					break;
 				}
 
@@ -204,18 +204,19 @@ public class Main {
 
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
-				if (d == 1)
-					rotated[i][j] = copy[2 - i][2 - j];
+				if (d == 0)
+                    rotated[i][j] = copy[2 - j][i];     //시계방향 90도
+				else if (d == 1)
+                    rotated[i][j] = copy[2 - i][2 - j]; //시계방향 180도
 				else if (d == 2)
-					rotated[i][j] = copy[j][2 - i];
-				else
-					rotated[i][j] = copy[2 - j][i];
+					rotated[i][j] = copy[j][2 - i];     //시계방향 270도
 			}
 		}
 
 		for (int i = 0; i < 8; i++) {
 			int nx = x + fx[i];
 			int ny = y + fy[i];
+
 			rotateArr[nx][ny] = rotated[cx[i]][cy[i]];
 		}
 
