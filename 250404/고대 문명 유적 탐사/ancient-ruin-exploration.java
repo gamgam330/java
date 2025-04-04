@@ -11,6 +11,8 @@ public class Main {
     static int[] fx = {-1,-1,-1,0,0,1,1,1};
     static int[] fy = {-1,0,1,-1,1,-1,0,1};
 
+	static List<Integer> scoreList;
+
     static int[] cx = {0,0,0,1,1,2,2,2};
     static int[] cy = {0,1,2,0,2,0,1,2};
 
@@ -50,13 +52,17 @@ public class Main {
 		for(int i = 0; i < M; i++){
 			spare.add(Integer.parseInt(st.nextToken()));
 		}
-        int count = 0;
 		simulation();
+
+		for(int value : scoreList){
+			sb.append(value + " ");
+		}
 
 		System.out.print(sb);
     }
 
 	private static void simulation(){
+		scoreList = new ArrayList<>();
 		for(int t = 0; t < N; t++){
 			count = 0;
 			temp = new ArrayList<>();
@@ -99,7 +105,7 @@ public class Main {
 				drawR();
 				count += total;
 			}
-			sb.append(count).append(" ");
+			scoreList.add(count);
 		}
 	}
 
@@ -156,11 +162,12 @@ public class Main {
 					temp.clear();
 
 					int total = 0;
-					for(int z = 0; z < 5; z++){
-						for(int q = 0; q < 5; q++){
-							if(!visited[z][q]){
-								total += BFS(z, q, Map);
-							}
+					for(int r = 0; r < 3; r++){
+						for(int c = 0; c < 3; c++){
+							int nx = i - 1 + r;
+							int ny = j - 1 + c;
+							if (!visited[nx][ny])
+								total += BFS(nx, ny, Map);
 						}
 					}
 
@@ -184,11 +191,11 @@ public class Main {
 		int[][] copy = new int[3][3];
 		int[][] rotateArr = new int[5][5];
 
-		for (int i = 0; i < 5; ++i){
+		for (int i = 0; i < 5; i++){
 			rotateArr[i] = map[i].clone();
 		}
 
-		for (int i = 0; i < 8; ++i) {
+		for (int i = 0; i < 8; i++) {
 			int nx = x + fx[i];
 			int ny = y + fy[i];
 			copy[cx[i]][cy[i]] = map[nx][ny];
@@ -196,8 +203,8 @@ public class Main {
 
 		int[][] rotated = new int[3][3];
 
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
 				if (d == 1)
 					rotated[i][j] = copy[2 - i][2 - j];
 				else if (d == 2)
@@ -207,7 +214,7 @@ public class Main {
 			}
 		}
 
-		for (int i = 0; i < 8; ++i) {
+		for (int i = 0; i < 8; i++) {
 			int nx = x + fx[i];
 			int ny = y + fy[i];
 			rotateArr[nx][ny] = rotated[cx[i]][cy[i]];
