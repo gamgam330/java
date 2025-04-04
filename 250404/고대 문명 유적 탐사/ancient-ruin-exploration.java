@@ -16,6 +16,8 @@ public class Main {
 
     static int count;
 
+	static Queue<Integer> spare;
+
 	static List<int[]> temp;
 	static List<int[]> list;
 	
@@ -34,6 +36,8 @@ public class Main {
 
 		rec = new int[M];
 
+		spare = new ArrayDeque();
+
         for(int i = 0 ; i < 5; i++){
             st = new StringTokenizer(br.readLine());
             for(int j = 0; j < 5; j++){
@@ -43,13 +47,16 @@ public class Main {
 
 		st = new StringTokenizer(br.readLine());
 
+		for(int i = 0; i < M; i++){
+			spare.add(Integer.parseInt(st.nextToken()));
+		}
         int count = 0;
-		simulation(st);
+		simulation();
 
 		System.out.print(sb);
     }
 
-	private static void simulation(StringTokenizer st){
+	private static void simulation(){
 		for(int t = 0; t < N; t++){
 			count = 0;
 			temp = new ArrayList<>();
@@ -68,7 +75,7 @@ public class Main {
 			for(int[] pos : list){
 				removeR(pos[0], pos[1]);
 			}
-			drawR(st);
+			drawR();
 			
 			while(true){
 				visited = new boolean[5][5];
@@ -89,18 +96,18 @@ public class Main {
 				for(int[] pos : temp){
 					removeR(pos[0], pos[1]);
 				}
-				drawR(st);
+				drawR();
 				count += total;
 			}
 			sb.append(count).append(" ");
 		}
 	}
 
-	private static void drawR(StringTokenizer st){
+	private static void drawR(){
 		for(int i = 0; i < 5; i++){
 			for(int j = 4; j >= 0; j--){
 				if(map[j][i] == 0){
-					map[j][i] = Integer.parseInt(st.nextToken());
+					map[j][i] = spare.poll();
 				}
 			}
 		}
