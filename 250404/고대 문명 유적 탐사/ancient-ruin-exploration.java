@@ -16,7 +16,7 @@ public class Main {
     static int[] cx = {0,0,0,1,1,2,2,2};
     static int[] cy = {0,1,2,0,2,0,1,2};
 
-    static int count;
+    static int maxRoundScore;
 
 	static Queue<Integer> spare;
 
@@ -64,7 +64,7 @@ public class Main {
 	private static void simulation(){
 		scoreList = new ArrayList<>();
 		for(int t = 0; t < N; t++){
-			count = 0;
+			maxRoundScore = 0;
 			temp = new ArrayList<>();
 			list = new ArrayList<>();
 			//최대값 찾아서 좌표 + 각도 구하기 BFS까지 진행하기 
@@ -85,16 +85,15 @@ public class Main {
 			
 			while(true){
 				visited = new boolean[5][5];
-				int total = 0;
+				int count = 0;
 				temp.clear();
 				for(int i = 0; i < 5; i++){
 					for(int j = 0; j < 5; j++){
-						if(!visited[i][j]){
-							total += BFS(i, j, map);
-						}
+						count += BFS(i, j, map);
 					}
 				}
-				if(total == 0){
+
+				if(count == 0){
 					break;
 				}
 
@@ -103,9 +102,10 @@ public class Main {
 					removeR(pos[0], pos[1]);
 				}
 				drawR();
-				count += total;
+				maxRoundScore += count;
+				
 			}
-			scoreList.add(count);
+			scoreList.add(maxRoundScore);
 		}
 	}
 
@@ -152,8 +152,8 @@ public class Main {
 
 
 		for(int k = 0; k < 3; k++){
-			for(int i = 1; i <= 3; i++){
-				for(int j = 1; j <= 3; j++){
+			for(int j = 1; j <= 3; j++){
+				for(int i = 1; i <= 3; i++){
 
 					int[][] Map = rotate(i, j, k);
 					
@@ -162,12 +162,11 @@ public class Main {
 					temp.clear();
 
 					int total = 0;
-					for(int r = 0; r < 3; r++){
-						for(int c = 0; c < 3; c++){
-							int nx = i - 1 + r;
-							int ny = j - 1 + c;
-							if (!visited[nx][ny])
-								total += BFS(nx, ny, Map);
+					for(int z = 0; z < 5; z++){
+						for(int q = 0; q < 5; q++){
+							if(!visited[z][q]){
+								total += BFS(z, q, Map);
+							}
 						}
 					}
 
@@ -182,7 +181,7 @@ public class Main {
 				}
 			}
 		}
-		count += max;
+		maxRoundScore += max;
 		return new int[]{rx, ry, rd};
 	}
 
