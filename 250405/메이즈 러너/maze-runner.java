@@ -65,7 +65,6 @@ public class Main {
 			findExitAndPeople();
             subWall(plzRotate);
             rotate(plzRotate);
-
         }
     }
 
@@ -79,49 +78,56 @@ public class Main {
             int peopleX = curPeople[0];
             int peopleY = curPeople[1];
 
+
             if(exitX != peopleX){
+                int nx = peopleX;
                 if(exitX > peopleX){
-                    peopleX++;
+                    nx++;
                 }else{
-                    peopleX--;
+                    nx--;
                 }
 
                 //벽일때
-                if(map[peopleX][peopleY] != 0){
+                if(map[nx][peopleY] == 0){
+					result++;
+                	people.get(i)[0] = nx;
+					if(nx == exitX && peopleY == exitY){
+						people.remove(i);
+						len--;
+						i--;
+					}
                     continue;
                 }
-
-                result++;
-
-                people.get(i)[0] = peopleX;
-            }else if(exitY != peopleY){
-                if(exitY > peopleY){
-                    peopleY++;
-                }else{
-                    peopleY--;
-                }
-
-                //벽일때
-                if(map[peopleX][peopleY] != 0){
-                    continue;
-                }
-
-                result++;
-                people.get(i)[1] = peopleY;
             }
-			//출구일때
-			if(peopleX == exitX && peopleY == exitY){
-				people.remove(i);
-				len--;
-				i--;
-			}
+			
+			if(exitY != peopleY){
+                int ny = peopleY;
+                if(exitY > peopleY){
+                    ny++;
+                }else{
+                    ny--;
+                }
+
+                //벽일때
+                if(map[peopleX][ny] == 0){
+					result++;
+                	people.get(i)[1] = ny;
+					//출구일때
+					if(peopleX == exitX && ny == exitY){
+						people.remove(i);
+						len--;
+						i--;
+					}
+                    continue;
+                }
+            }
         }
     }
 
     private static void findExitAndPeople(){
         for(int k = 1; k <= N; k++){
-            for(int i = 1; i <= N-k; i++){
-                for(int j = 1; j <= N-k; j++){
+            for(int j = 1; j <= N - k + 1; j++){
+                for(int i = 1; i <= N - k + 1; i++){
                     if(findPeople(i, j, k) && findExit(i, j, k)){
                         plzRotate[0] = i;
 						plzRotate[1] = j;
