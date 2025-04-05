@@ -126,8 +126,8 @@ public class Main {
 
     private static void findExitAndPeople(){
         for(int k = 1; k <= N; k++){
-            for(int i = 1; i <= N - k + 1; i++){
-                for(int j = 1; j <= N - k + 1; j++){
+            for(int i = 1; i <= N - k; i++){
+                for(int j = 1; j <= N - k; j++){
                     if(findPeople(i, j, k) && findExit(i, j, k)){
                         plzRotate[0] = i;
 						plzRotate[1] = j;
