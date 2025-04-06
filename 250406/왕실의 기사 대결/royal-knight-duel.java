@@ -54,7 +54,7 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int index = Integer.parseInt(st.nextToken());
             int dir = Integer.parseInt(st.nextToken());
-
+            
             solution(index, dir);
         }
 
@@ -98,7 +98,6 @@ public class Main {
 
         //즉 startX <= 타겟의X <= endX && startY <= 타깃의Y <= endY이면 연쇄적으로 밀려야함
 
-
         //밀린게 범위에서 벗어나면 false;
         if(1 > nx || nx > L || 1 > ny || ny > L || 1 > endX || endX > L || 1 > endY || endY > L){
             return false;
@@ -133,9 +132,12 @@ public class Main {
         int len = s.size();
         for(int i = 1; i <= len; i++){
             int index = s.pop();
+
+            //움직이기 전 좌상단 좌표
             int x = player.get(index).x;
             int y = player.get(index).y;
 
+            //움직인 후 좌상단 좌표
             int nx = x + dx[dir];
             int ny = y + dy[dir];
 
@@ -150,17 +152,25 @@ public class Main {
     }
 
     private static void addDamege(int cx, int cy, int index){
+        int damage = 0;
+        //움직인 후 우하단 좌표
         int nextX = cx + (player.get(index).h - 1);
         int nextY = cy + (player.get(index).w - 1);
 
-        for(int i = cx; i <= nextX; i++){
-            for(int j = cy; j <= nextY; j++){
-                if(map[i][j] == 1){
-                    result++;
+        for (int i = cx; i <= nextX; i++) {
+            for (int j = cy; j <= nextY; j++) {
+                if (map[i][j] == 1) {
+                    player.get(index).k--;
+                    damage++;
                 }
             }
         }
+
+        if(player.get(index).k > 0){
+            result += damage;
+        }
     }
+
 
     private static boolean isInRange(int startX, int startY, int endX, int endY, int index, int pullPlayer){
         int[][] playerMap = new int[L+1][L+1];
