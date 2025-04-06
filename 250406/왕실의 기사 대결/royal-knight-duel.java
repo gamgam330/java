@@ -61,7 +61,13 @@ public class Main {
             solution(index, dir);
         }
 
-        System.out.println(result);
+        int sum = 0;
+        for (int i = 1; i <= N; i++) {
+            if (player.get(i).k > 0) {
+                sum += player.get(i).d;
+            }
+        }
+        System.out.println(sum);
     }
 
     private static void solution(int index, int dir){
@@ -160,24 +166,15 @@ public class Main {
     }
 
     private static void addDamege(int cx, int cy, int index){
-        int damage = 0;
-        //움직인 후 우하단 좌표
-        int nextX = cx + (player.get(index).h - 1);
-        int nextY = cy + (player.get(index).w - 1);
-        for (int i = cx; i <= nextX; i++) {
-            for (int j = cy; j <= nextY; j++) {
-                if (map[i][j] == 1) {
-                    //System.out.println("트랩 : " + i + " " + j);
-                    player.get(index).k--;
-                    damage++;
+        Node node = player.get(index);
+        for (int i = cx; i < cx + node.h; i++) {
+            for (int j = cy; j < cy + node.w; j++) {
+                if (map[i][j] == 1 && node.k > 0) {
+                    node.k--;
+                    node.d += 1; // Node에 damage 누적 필드 따로 둬야 정확
                 }
             }
         }
-
-        if(player.get(index).k > 0){
-            result += damage;
-        }
-        //System.out.println("result : " + result);
     }
 
 
@@ -217,6 +214,7 @@ public class Main {
         int h;
         int w;
         int k;
+        int d = 0;
 
         public Node(int x, int y, int h, int w, int k){
             this.x = x;
