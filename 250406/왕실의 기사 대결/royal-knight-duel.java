@@ -55,6 +55,7 @@ public class Main {
             int index = Integer.parseInt(st.nextToken());
             int dir = Integer.parseInt(st.nextToken());
             
+            //System.out.println("index : " + index + " dir : " + dir);
             solution(index, dir);
         }
 
@@ -105,8 +106,8 @@ public class Main {
 
 
         //벽을 만나도 false;
-        for(int i = x; i <= endX; i++){
-            for(int j = y; j <= endY; j++){
+        for(int i = nx; i <= endX; i++){
+            for(int j = ny; j <= endY; j++){
                 if(map[i][j] == 2){
                     return false;
                 }
@@ -114,14 +115,13 @@ public class Main {
         }
 
         //사이에 사람이 있다면?
-        for(int i = 1; i <= N; i++){
-            if(i == index){
-                continue;
-            }
+        for (int i = 1; i <= N; i++) {
+            if (i == index || player.get(i).k <= 0) continue;
 
-            //여기서 피 0보다 작은애들은 저장안돼서 다른데서 처리 안해줘도됨
-            if(player.get(i).k > 0 && isInRange(nx, ny, endX, endY, i, index)){
-                return isCanMove(i, dir);
+            if (isInRange(nx, ny, endX, endY, i, index)) {
+                if (!isCanMove(i, dir)) {
+                    return false;
+                }
             }
         }
         
@@ -130,8 +130,10 @@ public class Main {
 
     private static void movePlayer(int dir){
         int len = s.size();
+        //System.out.println("len : " + len);
         for(int i = 1; i <= len; i++){
             int index = s.pop();
+            //System.out.println("stack index : " + index);
 
             //움직이기 전 좌상단 좌표
             int x = player.get(index).x;
@@ -156,7 +158,6 @@ public class Main {
         //움직인 후 우하단 좌표
         int nextX = cx + (player.get(index).h - 1);
         int nextY = cy + (player.get(index).w - 1);
-
         for (int i = cx; i <= nextX; i++) {
             for (int j = cy; j <= nextY; j++) {
                 if (map[i][j] == 1) {
@@ -169,6 +170,7 @@ public class Main {
         if(player.get(index).k > 0){
             result += damage;
         }
+        //System.out.println("result : " + result);
     }
 
 
@@ -177,7 +179,6 @@ public class Main {
 
         //startX, startY는 민애의 밀린 후 좌상단 좌표
         //endX, endY는 민애의 밀린 후 우하단 좌표
-
         for(int i = startX; i <= endX; i++){
             for(int j = startY; j <= endY; j++){
                 playerMap[i][j] = pullPlayer;
@@ -191,6 +192,7 @@ public class Main {
         //검사할 target의 우하단 좌표
         int ex = x + (player.get(index).h - 1);
         int ey = y + (player.get(index).w - 1);
+
 
         for(int i = x; i <= ex; i++){
             for(int j = y; j <= ey; j++){
