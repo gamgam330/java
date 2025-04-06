@@ -115,7 +115,7 @@ public class Main {
         }
 
         //사이에 사람이 있다면?
-        for(int i = 1; i <= Q; i++){
+        for(int i = 1; i <= N; i++){
             if(i == index){
                 continue;
             }
