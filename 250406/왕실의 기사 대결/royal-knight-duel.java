@@ -11,6 +11,8 @@ public class Main {
 
     static int result;
 
+    static boolean[] visited;
+
     static Stack<Integer> s;
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -69,6 +71,7 @@ public class Main {
         }
         
         s = new Stack<>();
+        visited = new boolean[N + 1];
         if(!isCanMove(index, dir)){
             return;
         }
@@ -77,8 +80,9 @@ public class Main {
     }
 
     private static boolean isCanMove(int index, int dir){
+        if(visited[index]) return true;
+        visited[index] = true;
         s.push(index);
-
         //좌상단 좌표
         int x = player.get(index).x;
         int y = player.get(index).y;
@@ -131,6 +135,7 @@ public class Main {
     private static void movePlayer(int dir){
         int len = s.size();
         //System.out.println("len : " + len);
+        //System.out.println("len : " + len);
         for(int i = 1; i <= len; i++){
             int index = s.pop();
             //System.out.println("stack index : " + index);
@@ -143,6 +148,7 @@ public class Main {
             int nx = x + dx[dir];
             int ny = y + dy[dir];
 
+            //System.out.println("움직이기 전 후 : " + x + " " + y + " " + nx + " " + ny);
 
             player.get(index).x = nx;
             player.get(index).y = ny;
@@ -161,6 +167,7 @@ public class Main {
         for (int i = cx; i <= nextX; i++) {
             for (int j = cy; j <= nextY; j++) {
                 if (map[i][j] == 1) {
+                    //System.out.println("트랩 : " + i + " " + j);
                     player.get(index).k--;
                     damage++;
                 }
