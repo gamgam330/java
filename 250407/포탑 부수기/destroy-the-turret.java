@@ -42,6 +42,13 @@ public class Main {
 
         for(int i = 1; i <= K; i++){
             solution(i);
+            // for(int j = 1; j <= N; j++){
+            //     for(int z = 1; z <= M; z++){
+            //         System.out.print(map[j][z] + " ");
+            //     }
+            //     System.out.println();
+            // }
+            // System.out.println();
         }
 
 
@@ -89,9 +96,11 @@ public class Main {
         int turretDamage = attackTurret.damage;
         
         if(isCanLaserAttack(attackerX, attackerY, damageX, damageY)){
+            //System.out.println("레이저 공격자와 공격받는자의 좌표 : " + attackerX + " " + attackerY + " " + damageX + " " + damageY);
             attackTurret.lastAttack = count;
             laserAttack(attackerX, attackerY, damageX, damageY, turretDamage, damageTurret, count);
         }else{
+            //System.out.println("폭탄 공격자와 공격받는자의 좌표 : " + attackerX + " " + attackerY + " " + damageX + " " + damageY);
             attackTurret.lastAttack = count;
             bombAttack(damageX, damageY, turretDamage, damageTurret, count);
         }
@@ -106,7 +115,8 @@ public class Main {
         for(int i = 0; i < len; i++){
             Turrets turret = turrets.get(i);
 
-            if(turret.lastDamage < count && turret.lastAttack < count){
+            if (turret.damage > 0 && map[turret.x][turret.y] > 0 &&
+                turret.lastDamage < count && turret.lastAttack < count) {
                 turret.damage += 1;
                 map[turret.x][turret.y] += 1;
             }
@@ -132,8 +142,10 @@ public class Main {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
 
-                nx = (nx - 1 + N) % N + 1;
-                ny = (ny - 1 + M) % M + 1;
+                if (nx < 1) nx = N;
+                else if (nx > N) nx = 1;
+                if (ny < 1) ny = M;
+                else if (ny > M) ny = 1;
 
                 if (!visited[nx][ny] && map[nx][ny] != 0) {
                     visited[nx][ny] = true;
@@ -164,7 +176,7 @@ public class Main {
         while(true){
             int nextX = path[endX][endY][0];
             int nextY = path[endX][endY][1];
-
+            //System.out.println("레이저 공격 루트 : " + nextX + " " + nextY);
             if(nextX == startX && nextY == startY){
                 break;
             }
@@ -193,8 +205,10 @@ public class Main {
             int nx = endX + bx[i];
             int ny = endY + by[i];
 
-            nx = (nx - 1 + N) % N + 1;
-            ny = (ny - 1 + M) % M + 1;
+            if (nx < 1) nx = N;
+            else if (nx > N) nx = 1;
+            if (ny < 1) ny = M;
+            else if (ny > M) ny = 1;
 
             if(map[nx][ny] != 0){
                 findTurret(nx, ny, realDamage/2, count);
