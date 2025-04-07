@@ -2,17 +2,16 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    
-    static int[][] map;
     static PriorityQueue<Rabbit> q;
     static PriorityQueue<Position> pq;
     static PriorityQueue<Winner> wq;
-    static Map<Integer, Rabbit> rabbitMap;
+    static Map<Long, Rabbit> rabbitMap;
 
-    static int Q, command, N, M, P, K, S, L;
+    static int Q, N, M, P, K, command;
+    static long S, L;
 
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
+    static long[] dx = {-1, 1, 0, 0};
+    static long[] dy = {0, 0, -1, 1};
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,7 +19,6 @@ public class Main {
 
         StringTokenizer st;
         q = new PriorityQueue<>();
-        map = new int[N+1][M+1];
         rabbitMap = new HashMap<>();
 
         for(int i = 0; i < Q; i++){
@@ -32,28 +30,26 @@ public class Main {
                 N = Integer.parseInt(st.nextToken());
                 M = Integer.parseInt(st.nextToken());
                 P = Integer.parseInt(st.nextToken());
+
                 for(int j = 0; j < P; j++){
-                    int rabbitPid = Integer.parseInt(st.nextToken());
-                    int rabbitDist = Integer.parseInt(st.nextToken());
+                    long rabbitPid = Long.parseLong(st.nextToken());
+                    long rabbitDist = Long.parseLong(st.nextToken());
                     Rabbit rabbit = new Rabbit(1, 1, 0, rabbitPid, rabbitDist, 0);
                     q.offer(rabbit);
                     rabbitMap.put(rabbit.pid, rabbit);
                 }
             }else if(command == 200){
                 K = Integer.parseInt(st.nextToken());
-                S = Integer.parseInt(st.nextToken());
+                S = Long.parseLong(st.nextToken());
                 raceRabbit();
             }else if(command == 300){
-                int id = Integer.parseInt(st.nextToken());
-                L = Integer.parseInt(st.nextToken());
-
+                long id = Long.parseLong(st.nextToken());
+                L = Long.parseLong(st.nextToken());
                 growLength(id);
-            }else{
-
             }
         }
 
-        int max = 0;
+        long max = 0;
         for(Rabbit rabbit : q){
             max = Math.max(max, rabbit.score);
         }
@@ -61,7 +57,7 @@ public class Main {
         System.out.println(max);
     }
 
-    private static void growLength(int id){
+    private static void growLength(long id){
         Rabbit rabbit = rabbitMap.get(id);
         rabbit.dist = rabbit.dist * L;
     }
@@ -70,33 +66,29 @@ public class Main {
         for(int i = 0; i < K; i++){
             Rabbit rabbit = q.poll();
 
-            int dist = rabbit.dist;
-            int x = rabbit.x;
-            int y = rabbit.y;
-            
-            pq = new PriorityQueue<>();
-            //이렇게하면 제일 우선순위가 높은 토끼가 4방향으로 다가게됨.
-            for(int j = 0; j < 4; j++){
-                int nx = getNext(x, dx[j] * dist, N);
-                int ny = getNext(y, dy[j] * dist, M);
-                
-                Position position = new Position(nx, ny);
+            long dist = rabbit.dist;
+            long x = rabbit.x;
+            long y = rabbit.y;
 
+            pq = new PriorityQueue<>();
+            for(int j = 0; j < 4; j++){
+                long nx = getNext(x, dx[j] * dist, N);
+                long ny = getNext(y, dy[j] * dist, M);
+
+                Position position = new Position(nx, ny);
                 pq.offer(position);
             }
 
-            //전체 토끼한테 0번 인덱스의 x+y를 score에 다 집어넣기
             Position position = pq.poll();
-            
+
             rabbit.x = position.x;
             rabbit.y = position.y;
 
             rabbit.jump += 1;
 
-            int curScore = position.x + position.y;
+            long curScore = position.x + position.y;
 
             for(Rabbit curRabbit : q){
-                //System.out.println("add score : " + curScore);
                 curRabbit.score += curScore;
             }
 
@@ -104,36 +96,32 @@ public class Main {
         }
 
         wq = new PriorityQueue<>();
-        //S 더하기
-        //현재 서있는 행 번호 + 열 번호가 큰 토끼 -> 행 번호가 큰 토끼 -> 열 번호가 큰 토끼
         for(Rabbit curRabbit : q){
             Winner winner = new Winner(curRabbit.x, curRabbit.y, curRabbit.pid);
             wq.add(winner);
         }
-        
-        //현재 큰 토끼
+
         Winner winner = wq.poll();
         Rabbit winnerRabbit = rabbitMap.get(winner.pid);
-
         winnerRabbit.score += S;
     }
 
-    private static int getNext(int cur, int dist, int bound) {
-        int pos = cur - 1 + dist;
-        int mod = 2 * bound - 2;
+    private static long getNext(long cur, long dist, long bound) {
+        long pos = cur - 1 + dist;
+        long mod = 2 * bound - 2;
         pos = (pos % mod + mod) % mod;
         return (pos < bound) ? pos + 1 : 2 * bound - pos - 1;
     }
 
     static class Rabbit implements Comparable<Rabbit>{
-        int x;
-        int y;
-        int jump;
-        int pid;
-        int dist;
-        int score;
+        long x;
+        long y;
+        long jump;
+        long pid;
+        long dist;
+        long score;
 
-        public Rabbit(int x, int y, int jump, int pid, int dist, int score){
+        public Rabbit(long x, long y, long jump, long pid, long dist, long score){
             this.x = x;
             this.y = y;
             this.jump = jump;
@@ -145,23 +133,23 @@ public class Main {
         @Override
         public int compareTo(Rabbit o){
             if(o.jump != this.jump){
-                return this.jump - o.jump;
+                return Long.compare(this.jump, o.jump);
             }
             if((o.x+o.y) != (this.x+this.y)){
-                return (this.x+this.y) - (o.x+o.y);
+                return Long.compare(this.x + this.y, o.x + o.y);
             }
             if(o.y != this.y){
-                return this.y - o.y;
+                return Long.compare(this.y, o.y);
             }
-            return this.pid - o.pid;
+            return Long.compare(this.pid, o.pid);
         }
     }
 
     static class Position implements Comparable<Position>{
-        int x;
-        int y;
+        long x;
+        long y;
 
-        public Position(int x, int y){
+        public Position(long x, long y){
             this.x = x;
             this.y = y;
         }
@@ -169,21 +157,21 @@ public class Main {
         @Override
         public int compareTo(Position o){
             if((this.x+this.y) != (o.x+o.y)){
-                return (o.x+o.y) - (this.x+this.y);
+                return Long.compare(o.x + o.y, this.x + this.y);
             }
             if(this.x != o.x){
-                return o.x - this.x;
+                return Long.compare(o.x, this.x);
             }
-            return o.y - this.y;
+            return Long.compare(o.y, this.y);
         }
     }
 
     static class Winner implements Comparable<Winner>{
-        int x;
-        int y;
-        int pid;
+        long x;
+        long y;
+        long pid;
 
-        public Winner(int x, int y, int pid){
+        public Winner(long x, long y, long pid){
             this.x = x;
             this.y = y;
             this.pid = pid;
@@ -192,15 +180,15 @@ public class Main {
         @Override
         public int compareTo(Winner o){
             if((this.x+this.y) != (o.x+o.y)){
-                return (o.x+o.y) - (this.x+this.y);
+                return Long.compare(o.x + o.y, this.x + this.y);
             }
             if(this.x != o.x){
-                return o.x - this.x;
+                return Long.compare(o.x, this.x);
             }
             if(this.y != o.y){
-                return o.y - this.y;
+                return Long.compare(o.y, this.y);
             }
-            return o.pid - this.pid;
+            return Long.compare(o.pid, this.pid);
         }
     }
 }
