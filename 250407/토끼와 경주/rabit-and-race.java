@@ -101,8 +101,8 @@ public class Main {
 
         wq = new PriorityQueue<>();
         for(Rabbit curRabbit : q){
+            Winner winner = new Winner(curRabbit.x, curRabbit.y, curRabbit.pid);
             if(curRabbit.roundJump > 0){
-                Winner winner = new Winner(curRabbit.x, curRabbit.y, curRabbit.pid);
                 wq.add(winner);
             }
         }
