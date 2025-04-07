@@ -13,8 +13,8 @@ public class Main {
     static int[] dy = {1, 0, -1, 0};
 
     static int[][][] path;
-    static int[][] dist;
     static boolean[][] visited;
+    static Turrets[][] turretMap;
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,6 +26,7 @@ public class Main {
 
         map = new int[N+1][M+1];
         turrets = new ArrayList<>();
+        turretMap = new Turrets[N+1][M+1];
 
         for(int i = 1; i <= N; i++){
             st = new StringTokenizer(br.readLine());
@@ -34,19 +35,13 @@ public class Main {
                 if(map[i][j] != 0){
                     Turrets turret = new Turrets(i, j, map[i][j], 0, 0);
                     turrets.add(turret);
+                    turretMap[i][j] = turret;
                 }
             }
         }
 
         for(int i = 1; i <= K; i++){
             solution(i);
-
-            //for(int j = 1; j <= N; j++){
-            //    for(int k = 1; k <= M; k++){
-            //        System.out.print(map[j][k] + " ");
-            //    }
-            //    System.out.println();
-            //}
         }
 
 
@@ -59,21 +54,26 @@ public class Main {
     }
 
     private static void solution(int count){
-        //공격하는 포탑 선정
-        path = new int[N+1][M+1][2];
-        dist = new int[N+1][M+1];
-        visited = new boolean[N+1][M+1];
-
-        for(int i = 1; i <= N; i++){
-            Arrays.fill(dist[i], Integer.MAX_VALUE - 1);
+        // 생존 포탑 리스트 구성
+        List<Turrets> aliveTurrets = new ArrayList<>();
+        for (Turrets t : turrets) {
+            if (t.damage > 0 && map[t.x][t.y] > 0) {
+                aliveTurrets.add(t);
+            }
         }
 
+        if (aliveTurrets.size() <= 1) return;
+
+        // 정렬
+        Collections.sort(aliveTurrets);
+        
+        Turrets attackTurret = aliveTurrets.get(0);
+        Turrets damageTurret = aliveTurrets.get(aliveTurrets.size() - 1);
+
+        path = new int[N+1][M+1][2];
+        visited = new boolean[N+1][M+1];
 
         Collections.sort(turrets);
-        Turrets attackTurret = turrets.get(0);
-
-        //공격받는 포탑 선정
-        Turrets damageTurret = turrets.get(turrets.size() - 1);
 
         //공격하는 포탑 좌표
         int attackerX = attackTurret.x;
@@ -88,19 +88,13 @@ public class Main {
 
         int turretDamage = attackTurret.damage;
         
-        //공격자 경로 찾기 만약 false라면 포탄공격 true라면 레이저 공격
         if(isCanLaserAttack(attackerX, attackerY, damageX, damageY)){
-            //System.out.println("레이저 공격 : " + attackerX + " " + attackerY + " " + damageX + " " + damageY);
-            //System.out.println("공격 포탑의 공격력 : " + turretDamage);
             attackTurret.lastAttack = count;
             laserAttack(attackerX, attackerY, damageX, damageY, turretDamage, damageTurret, count);
         }else{
-            //System.out.println("포탄 공격 : " + attackerX + " " + attackerY + " " + damageX + " " + damageY);
             attackTurret.lastAttack = count;
             bombAttack(damageX, damageY, turretDamage, damageTurret, count);
         }
-
-        turrets.removeIf(t -> t.damage <= 0 || map[t.x][t.y] == 0);
 
         //포탑정비
         healTurret(count);
@@ -138,10 +132,8 @@ public class Main {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
 
-                if (nx < 1) nx = N;
-                else if (nx > N) nx = 1;
-                if (ny < 1) ny = M;
-                else if (ny > M) ny = 1;
+                nx = (nx - 1 + N) % N + 1;
+                ny = (ny - 1 + M) % M + 1;
 
                 if (!visited[nx][ny] && map[nx][ny] != 0) {
                     visited[nx][ny] = true;
@@ -184,7 +176,7 @@ public class Main {
         }
     }
 
-    //0처리 해야함
+    //처리 해야함
     private static void bombAttack(int endX, int endY, int turretDamage, Turrets damageTurret, int count){
         int realDamage = turretDamage;
         damageTurret.damage -= realDamage;
@@ -201,10 +193,8 @@ public class Main {
             int nx = endX + bx[i];
             int ny = endY + by[i];
 
-            if (nx < 1) nx = N;
-            else if (nx > N) nx = 1;
-            if (ny < 1) ny = M;
-            else if (ny > M) ny = 1;
+            nx = (nx - 1 + N) % N + 1;
+            ny = (ny - 1 + M) % M + 1;
 
             if(map[nx][ny] != 0){
                 findTurret(nx, ny, realDamage/2, count);
@@ -213,25 +203,19 @@ public class Main {
     }
 
     private static void findTurret(int x, int y, int realDamage, int count){
-        int len = turrets.size();
-        ArrayList<Integer> removeTurret = new ArrayList<>();
-        for(int i = 0; i < len; i++){
-            Turrets turret = turrets.get(i);
+        Turrets turret = turretMap[x][y];
+        if (turret == null) return;
 
-            if(turret.x == x && turret.y == y){
-                //System.out.println("공격 " + realDamage + " 만큼 데미지 받는 중... : " + x + " " + y + " " + turret.damage);
-                map[x][y] -= realDamage;
-                turret.damage -= realDamage;
-                //System.out.println("공격 받은 후 데미지 : " + turret.damage + " index : " + i);
-                turret.lastDamage = count;
-                //System.out.println("공격 받은 턴 : " + turret.lastDamage);
-            }
+        turret.damage -= realDamage;
+        map[x][y] -= realDamage;
+        turret.lastDamage = count;
 
-            if(turret.damage <= 0){
-                map[x][y] = 0;
-            }
+        if (turret.damage <= 0) {
+            map[x][y] = 0;
+            turretMap[x][y] = null;
         }
     }
+
     
     static class Turrets implements Comparable<Turrets>{
         int x;
@@ -248,18 +232,20 @@ public class Main {
             this.lastDamage = lastDamage;
         }
 
-        @Override
-        public int compareTo(Turrets o){
-            if(this.damage == o.damage){
-                if(this.lastAttack == o.lastAttack){
-                    if((this.x + this.y) == (o.x + o.y)){
-                        return o.y - this.y;
-                    }
-                    return (o.x + o.y) - (this.x + this.y);
-                }
+       @Override
+        public int compareTo(Turrets o) {
+            if (this.damage != o.damage)
+                return this.damage - o.damage;
+
+            if (this.lastAttack != o.lastAttack)
                 return o.lastAttack - this.lastAttack;
-            }
-            return this.damage - o.damage;
+
+            int thisSum = this.x + this.y;
+            int otherSum = o.x + o.y;
+            if (thisSum != otherSum)
+                return otherSum - thisSum;
+
+            return o.y - this.y;
         }
     }
 }
