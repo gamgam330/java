@@ -147,7 +147,7 @@ public class Main {
                 return Long.compare(this.x + this.y, o.x + o.y);
             }
             if(o.x != this.x){
-                return Long.compare(this.x, o.y);
+                return Long.compare(this.x, o.x);
             }
             if(o.y != this.y){
                 return Long.compare(this.y, o.y);
