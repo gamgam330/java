@@ -100,6 +100,8 @@ public class Main {
             bombAttack(damageX, damageY, turretDamage, damageTurret, count);
         }
 
+        turrets.removeIf(t -> t.damage <= 0 || map[t.x][t.y] == 0);
+
         //포탑정비
         healTurret(count);
     }
@@ -227,12 +229,7 @@ public class Main {
 
             if(turret.damage <= 0){
                 map[x][y] = 0;
-                removeTurret.add(i);
             }
-        }
-
-        for (int i : removeTurret) {
-            turrets.remove(i);
         }
     }
     
