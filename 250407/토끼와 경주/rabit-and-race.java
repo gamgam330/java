@@ -34,11 +34,14 @@ public class Main {
                 for(int j = 0; j < P; j++){
                     long rabbitPid = Long.parseLong(st.nextToken());
                     long rabbitDist = Long.parseLong(st.nextToken());
-                    Rabbit rabbit = new Rabbit(1, 1, 0, rabbitPid, rabbitDist, 0);
+                    Rabbit rabbit = new Rabbit(1, 1, 0, rabbitPid, rabbitDist, 0, 0);
                     q.offer(rabbit);
                     rabbitMap.put(rabbit.pid, rabbit);
                 }
             }else if(command == 200){
+                for(Rabbit rabbit : rabbitMap.values()){
+                    rabbit.roundJump = 0;
+                }
                 K = Integer.parseInt(st.nextToken());
                 S = Long.parseLong(st.nextToken());
                 raceRabbit();
@@ -85,10 +88,11 @@ public class Main {
             rabbit.y = position.y;
 
             rabbit.jump += 1;
+            rabbit.roundJump += 1;
 
             long curScore = position.x + position.y;
 
-            for(Rabbit curRabbit : q){
+            for (Rabbit curRabbit : q) {
                 curRabbit.score += curScore;
             }
 
@@ -97,8 +101,10 @@ public class Main {
 
         wq = new PriorityQueue<>();
         for(Rabbit curRabbit : q){
-            Winner winner = new Winner(curRabbit.x, curRabbit.y, curRabbit.pid);
-            wq.add(winner);
+            if(curRabbit.roundJump > 0){
+                Winner winner = new Winner(curRabbit.x, curRabbit.y, curRabbit.pid);
+                wq.add(winner);
+            }
         }
 
         Winner winner = wq.poll();
@@ -120,14 +126,16 @@ public class Main {
         long pid;
         long dist;
         long score;
+        int roundJump;
 
-        public Rabbit(long x, long y, long jump, long pid, long dist, long score){
+        public Rabbit(long x, long y, long jump, long pid, long dist, long score, int roundJump){
             this.x = x;
             this.y = y;
             this.jump = jump;
             this.pid = pid;
             this.dist = dist;
             this.score = score;
+            this.roundJump = roundJump;
         }
 
         @Override
