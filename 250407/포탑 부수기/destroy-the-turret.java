@@ -102,7 +102,7 @@ public class Main {
         }else{
             //System.out.println("폭탄 공격자와 공격받는자의 좌표 : " + attackerX + " " + attackerY + " " + damageX + " " + damageY);
             attackTurret.lastAttack = count;
-            bombAttack(damageX, damageY, turretDamage, damageTurret, count);
+            bombAttack(attackerX, attackerY, damageX, damageY, turretDamage, damageTurret, count);
         }
 
         //포탑정비
@@ -189,7 +189,7 @@ public class Main {
     }
 
     //처리 해야함
-    private static void bombAttack(int endX, int endY, int turretDamage, Turrets damageTurret, int count){
+    private static void bombAttack(int attackerX, int attackerY, int endX, int endY, int turretDamage, Turrets damageTurret, int count){
         int realDamage = turretDamage;
         damageTurret.damage -= realDamage;
         map[endX][endY] -= realDamage;
@@ -209,6 +209,8 @@ public class Main {
             else if (nx > N) nx = 1;
             if (ny < 1) ny = M;
             else if (ny > M) ny = 1;
+
+            if(nx == attackerX && ny == attackerY) continue;
 
             if(map[nx][ny] != 0){
                 findTurret(nx, ny, realDamage/2, count);
