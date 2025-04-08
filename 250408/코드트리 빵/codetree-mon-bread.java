@@ -60,6 +60,7 @@ public class Main {
             time++;
 
             // 1. 이동
+            List<Person> arrivedThisTurn = new ArrayList<>();
             for (Person p : people) {
                 if (!p.isOnMap() || p.isArrived()) continue;
                 int[][] dist = bfs(p.storeX, p.storeY);
@@ -86,9 +87,14 @@ public class Main {
 
                 if (p.curX == p.storeX && p.curY == p.storeY) {
                     p.arrived = true;
-                    map[p.curX][p.curY] = 3;
+                    arrivedThisTurn.add(p);
                 }
             }
+
+            for (Person p : arrivedThisTurn) {
+                map[p.curX][p.curY] = 3;
+            }
+
 
             // 2. time번째 사람 베이스캠프 진입
             if (time <= M) {
@@ -100,10 +106,14 @@ public class Main {
 
                 for (int i = 1; i <= N; i++) {
                     for (int j = 1; j <= N; j++) {
-                        if (map[i][j] == 1 && dist[i][j] < min) {
-                            min = dist[i][j];
-                            bx = i;
-                            by = j;
+                        if (map[i][j] == 1) {
+                            // 거리 더 작거나, 거리가 같으면 (행,열) 우선순위 비교
+                            if (dist[i][j] < min
+                                || (dist[i][j] == min && (i < bx || (i == bx && j < by)))) {
+                                min = dist[i][j];
+                                bx = i;
+                                by = j;
+                            }
                         }
                     }
                 }
@@ -111,6 +121,7 @@ public class Main {
                 p.setStart(bx, by);
                 map[bx][by] = 3;
             }
+
 
             // 3. 종료 조건
             boolean done = true;
